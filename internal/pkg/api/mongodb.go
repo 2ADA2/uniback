@@ -4,15 +4,18 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var uri = "mongodb+srv://admin:admin@uni.mmuzn.mongodb.net/?retryWrites=true&w=majority&appName=Uni"
+func ConnectDB() *mongo.Client {
+	err := godotenv.Load()
 
-func ConnectDB(uri string) *mongo.Client {
+	var uri = os.Getenv("DB_URL")
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
 	if err != nil {
 		log.Fatal(err)
@@ -34,7 +37,7 @@ func ConnectDB(uri string) *mongo.Client {
 }
 
 // Client instance
-var DB *mongo.Client = ConnectDB(uri)
+var DB *mongo.Client = ConnectDB()
 
 // getting database collections
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {

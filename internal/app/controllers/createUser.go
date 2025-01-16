@@ -1,13 +1,16 @@
 package controllers
 
 import (
+	"fmt"
 	"myapp/internal/app/models"
 	"myapp/internal/app/responses"
 	"myapp/internal/pkg/api"
+	"myapp/internal/pkg/token"
 	"net/http"
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/net/context"
@@ -38,11 +41,34 @@ func (e *CreateUser) Status(c echo.Context) error {
 		})
 	}
 
+	var user models.User
+	userCollection.FindOne(ctx, bson.M{"name": name}).Decode(&user)
+
+	if user.Name != "" {
+		return c.JSON(http.StatusBadRequest, responses.UserResponse{
+			Status:  http.StatusBadRequest,
+			Message: "the name already in use",
+			Data:    &echo.Map{"data": user.Name},
+		})
+	}
+
+	jwtToken, err := token.CreateToken(name)
+	fmt.Println(err)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.UserResponse{
+			Status:  http.StatusBadRequest,
+			Message: "token error",
+			Data:    &echo.Map{"data": "token hasn't been created"},
+		})
+	}
+
 	// Create a new user object
 	newUser := models.User{
 		Id:       primitive.NewObjectID(),
 		Name:     name,
 		Password: password,
+		Token:    jwtToken,
 	}
 
 	// Insert the new user into the database
@@ -59,6 +85,9 @@ func (e *CreateUser) Status(c echo.Context) error {
 	return c.JSON(http.StatusCreated, responses.UserResponse{
 		Status:  http.StatusCreated,
 		Message: "success",
-		Data:    &echo.Map{"data": result},
+		Data: &echo.Map{
+			"Token":      jwtToken,
+			"InsertedID": result,
+		},
 	})
 }

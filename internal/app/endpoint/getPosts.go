@@ -18,18 +18,6 @@ type Service interface {
 	GenerateNewPosts() service.Posts
 }
 
-type Post struct {
-	Author string `json:"author"`
-	Subs   int    `json:"subs"`
-	Date   string `json:"date"`
-	Text   string `json:"text"`
-	ImgUrl string `json:"imgUrl"`
-}
-
-type Posts struct {
-	Posts []Post `json:"posts"`
-}
-
 type GetPosts struct {
 	s Service
 }
