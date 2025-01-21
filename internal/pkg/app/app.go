@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"myapp/internal/app/controllers"
+	createpost "myapp/internal/app/createPost"
 	getPosts "myapp/internal/app/endpoint"
+	"myapp/internal/app/getPost"
 	"myapp/internal/app/getUsers"
 	"myapp/internal/app/login"
 	"myapp/internal/app/ping"
@@ -22,6 +24,8 @@ type App struct {
 	getUsers   *getUsers.GetUsers
 	createUser *controllers.CreateUser
 	login      *login.Login
+	getPost    *getPost.GetPost
+	createPost *createpost.CreatePost
 
 	echo *echo.Echo
 }
@@ -34,16 +38,24 @@ func New() (*App, error) {
 	a.e = getPosts.New(a.s)
 	a.ping = ping.New()
 	a.getUsers = getUsers.New()
+
 	a.createUser = controllers.New()
 	a.login = login.New()
+
+	a.getPost = getPost.New()
+	a.createPost = createpost.New()
 
 	a.echo = echo.New()
 
 	a.echo.GET("/ping", a.ping.Status)
+	a.echo.GET("/getPosts", a.e.Status, checkToken.CheckToken)
+
 	a.echo.POST("/register", a.createUser.Status)
 	a.echo.POST("/login", a.login.Status)
 
-	a.echo.GET("/getPosts", a.e.Status, checkToken.CheckToken)
+	a.echo.GET("/getPost", a.getPost.Status, checkToken.CheckToken)
+	a.echo.POST("/createPost", a.createPost.Status, checkToken.CheckToken)
+
 	return a, nil
 }
 

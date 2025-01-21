@@ -17,6 +17,7 @@ import (
 )
 
 var userCollection *mongo.Collection = api.GetCollection(api.DB, "users")
+var userCfgCollection *mongo.Collection = api.GetCollection(api.DB, "configs")
 
 type CreateUser struct {
 }
@@ -71,6 +72,19 @@ func (e *CreateUser) Status(c echo.Context) error {
 		Token:    jwtToken,
 	}
 
+	now := time.Now()
+	t := now.Format("2006.01.02")
+
+	newUserCfg := models.UserCfg{
+		User:       name,
+		About:      "A new user",
+		Followers:  []string{},
+		Subscribes: []string{},
+		Links:      []models.Link{},
+		Date:       t,
+		Posts:      models.Posts{},
+	}
+
 	// Insert the new user into the database
 	result, err := userCollection.InsertOne(ctx, newUser)
 	if err != nil {
@@ -80,7 +94,14 @@ func (e *CreateUser) Status(c echo.Context) error {
 			Data:    &echo.Map{"data": err.Error()},
 		})
 	}
-
+	cfg, err := userCfgCollection.InsertOne(ctx, newUserCfg)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.UserResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "error",
+			Data:    &echo.Map{"data": err.Error()},
+		})
+	}
 	// Respond with the created user ID
 	return c.JSON(http.StatusCreated, responses.UserResponse{
 		Status:  http.StatusCreated,
@@ -88,6 +109,7 @@ func (e *CreateUser) Status(c echo.Context) error {
 		Data: &echo.Map{
 			"Token":      jwtToken,
 			"InsertedID": result,
+			"cfg":        cfg,
 		},
 	})
 }

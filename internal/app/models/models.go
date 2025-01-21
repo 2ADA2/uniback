@@ -10,13 +10,32 @@ type User struct {
 }
 
 type Post struct {
-	Author string `json:"author"`
-	Subs   int    `json:"subs"`
-	Date   string `json:"date"`
-	Text   string `json:"text"`
-	ImgUrl string `json:"imgUrl"`
+	ID        primitive.ObjectID
+	Author    string `json:"author"`
+	Subs      int    `json:"subs"`
+	Date      string `json:"date"`
+	Text      string `json:"text"`
+	ImgUrl    string `json:"imgUrl"`
+	Likes     int
+	Bookmarks int
+	Views     int
 }
 
 type Posts struct {
 	Posts []Post `json:"posts"`
+}
+
+type Link struct {
+	Name string
+	Link string
+}
+
+type UserCfg struct {
+	User       string
+	About      string
+	Followers  []string
+	Subscribes []string
+	Links      []Link
+	Date       string
+	Posts      Posts
 }
