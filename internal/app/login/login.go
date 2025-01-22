@@ -70,8 +70,11 @@ func (e *Login) Status(c echo.Context) error {
 		})
 	}
 
-	userCollection.UpdateOne(ctx, bson.M{"name": name}, bson.M{"Token": jwtToken})
-	resp := `{"Token" : ` + jwtToken + "}"
+	update := user
+	update.Token = jwtToken
+
+	userCollection.UpdateOne(ctx, bson.M{"name": name}, bson.M{"$set": update})
+	resp := `{"token" : ` + jwtToken + "}"
 	c.Response().Write([]byte(resp))
 
 	return nil
