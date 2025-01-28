@@ -3,6 +3,9 @@ package app
 import (
 	"fmt"
 	"log"
+	"myapp/internal/app/communication/bookmark"
+	"myapp/internal/app/communication/like"
+	"myapp/internal/app/communication/subscribe"
 	"myapp/internal/app/controllers"
 	createpost "myapp/internal/app/createPost"
 	getPosts "myapp/internal/app/endpoint"
@@ -26,6 +29,9 @@ type App struct {
 	login      *login.Login
 	getPost    *getPost.GetPost
 	createPost *createpost.CreatePost
+	like       *like.Like
+	subscribe  *subscribe.Subscribe
+	bookmark   *bookmark.Bookmark
 
 	echo *echo.Echo
 }
@@ -45,6 +51,10 @@ func New() (*App, error) {
 	a.getPost = getPost.New()
 	a.createPost = createpost.New()
 
+	a.like = like.New()
+	a.bookmark = bookmark.New()
+	a.subscribe = subscribe.New()
+
 	a.echo = echo.New()
 
 	a.echo.GET("/ping", a.ping.Status)
@@ -55,6 +65,10 @@ func New() (*App, error) {
 
 	a.echo.GET("/getPost", a.getPost.Status, checkToken.CheckToken)
 	a.echo.POST("/createPost", a.createPost.Status, checkToken.CheckToken)
+
+	a.echo.POST("/like", a.like.Status, checkToken.CheckToken)
+	a.echo.POST("/bookmark", a.bookmark.Status, checkToken.CheckToken)
+	a.echo.POST("/subscribe", a.subscribe.Status, checkToken.CheckToken)
 
 	return a, nil
 }

@@ -83,6 +83,8 @@ func (e *CreateUser) Status(c echo.Context) error {
 		Links:      []models.Link{},
 		Date:       t,
 		Posts:      models.Posts{},
+		Likes:      []string{},
+		Bookmarks:  []string{},
 	}
 
 	// Insert the new user into the database

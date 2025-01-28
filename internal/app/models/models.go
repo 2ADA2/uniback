@@ -38,4 +38,6 @@ type UserCfg struct {
 	Links      []Link
 	Date       string
 	Posts      Posts
+	Likes      []string
+	Bookmarks  []string
 }
