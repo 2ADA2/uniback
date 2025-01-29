@@ -41,3 +41,11 @@ type UserCfg struct {
 	Likes      []string
 	Bookmarks  []string
 }
+
+type SubscribeBody struct {
+	Author string
+}
+
+type ViewBody struct {
+	Id string
+}

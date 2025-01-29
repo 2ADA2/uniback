@@ -6,6 +6,7 @@ import (
 	"myapp/internal/app/communication/bookmark"
 	"myapp/internal/app/communication/like"
 	"myapp/internal/app/communication/subscribe"
+	"myapp/internal/app/communication/view"
 	"myapp/internal/app/controllers"
 	createpost "myapp/internal/app/createPost"
 	getPosts "myapp/internal/app/endpoint"
@@ -32,6 +33,7 @@ type App struct {
 	like       *like.Like
 	subscribe  *subscribe.Subscribe
 	bookmark   *bookmark.Bookmark
+	view       *view.View
 
 	echo *echo.Echo
 }
@@ -69,6 +71,7 @@ func New() (*App, error) {
 	a.echo.POST("/like", a.like.Status, checkToken.CheckToken)
 	a.echo.POST("/bookmark", a.bookmark.Status, checkToken.CheckToken)
 	a.echo.POST("/subscribe", a.subscribe.Status, checkToken.CheckToken)
+	a.echo.POST("/view", a.view.Status, checkToken.CheckToken)
 
 	return a, nil
 }
