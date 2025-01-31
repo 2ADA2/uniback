@@ -79,7 +79,7 @@ func New() (*App, error) {
 func (a *App) Run() error {
 	fmt.Println("server running")
 
-	err := a.echo.Start(os.Getenv("PORT"))
+	err := a.echo.Start("0.0.0.0" + os.Getenv("PORT"))
 	if err != nil {
 		log.Fatal(err)
 	}
