@@ -19,6 +19,7 @@ import (
 	"os"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type App struct {
@@ -40,8 +41,12 @@ type App struct {
 
 func New() (*App, error) {
 	a := &App{}
-
+	a.echo = echo.New()
 	a.s = service.New()
+
+	a.echo.Use(middleware.Logger())
+	a.echo.Use(middleware.Recover())
+	a.echo.Use(middleware.CORS())
 
 	a.e = getPosts.New(a.s)
 	a.ping = ping.New()
@@ -56,8 +61,6 @@ func New() (*App, error) {
 	a.like = like.New()
 	a.bookmark = bookmark.New()
 	a.subscribe = subscribe.New()
-
-	a.echo = echo.New()
 
 	a.echo.GET("/ping", a.ping.Status)
 	a.echo.GET("/getPosts", a.e.Status, checkToken.CheckToken)
@@ -79,7 +82,7 @@ func New() (*App, error) {
 func (a *App) Run() error {
 	fmt.Println("server running")
 
-	err := a.echo.Start("0.0.0.0" + os.Getenv("PORT"))
+	err := a.echo.Start(os.Getenv("PORT"))
 	if err != nil {
 		log.Fatal(err)
 	}
