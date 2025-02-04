@@ -11,6 +11,7 @@ import (
 	createpost "myapp/internal/app/createPost"
 	getPosts "myapp/internal/app/endpoint"
 	"myapp/internal/app/getPost"
+	"myapp/internal/app/getUser"
 	"myapp/internal/app/getUsers"
 	"myapp/internal/app/login"
 	"myapp/internal/app/ping"
@@ -35,6 +36,7 @@ type App struct {
 	subscribe  *subscribe.Subscribe
 	bookmark   *bookmark.Bookmark
 	view       *view.View
+	getUser    *getUser.GetUser
 
 	echo *echo.Echo
 }
@@ -70,6 +72,8 @@ func New() (*App, error) {
 
 	a.echo.GET("/getPost", a.getPost.Status, checkToken.CheckToken)
 	a.echo.POST("/createPost", a.createPost.Status, checkToken.CheckToken)
+	a.echo.GET("/getSelf", a.getUser.Status, checkToken.CheckToken)
+	a.echo.GET("/getUser", a.getUser.Status, checkToken.CheckToken)
 
 	a.echo.POST("/like", a.like.Status, checkToken.CheckToken)
 	a.echo.POST("/bookmark", a.bookmark.Status, checkToken.CheckToken)
