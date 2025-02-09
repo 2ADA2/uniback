@@ -1,7 +1,8 @@
-package getUser
+package getUserInfo
 
 import (
 	"context"
+	"encoding/json"
 	"myapp/internal/app/models"
 	"myapp/internal/app/responses"
 	"myapp/internal/pkg/api"
@@ -13,24 +14,33 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type GetUser struct {
+type GetUserInfo struct {
 }
 
-func New() *GetUser {
-	return &GetUser{}
+func New() *GetUserInfo {
+	return &GetUserInfo{}
 }
 
 var usersCollection *mongo.Collection = api.GetCollection(api.DB, "users")
 var userCfgCollection *mongo.Collection = api.GetCollection(api.DB, "configs")
 
-func (e *GetUser) Status(c echo.Context) error {
+func (e *GetUserInfo) Status(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	token := c.Request().Header.Get("Authorization")
+	var jsonUser models.UserInfo
+	err := json.NewDecoder(c.Request().Body).Decode(&jsonUser)
+
+	if err != nil {
+		return c.JSON(http.StatusNotFound, responses.UserResponse{
+			Status:  http.StatusNotFound,
+			Message: "notFound",
+			Data:    &echo.Map{"data": "no such data"},
+		})
+	}
 
 	var user models.User
-	usersCollection.FindOne(ctx, bson.M{"token": token}).Decode(&user)
+	usersCollection.FindOne(ctx, bson.M{"name": jsonUser.User}).Decode(&user)
 
 	if user.Name == "" {
 		return c.JSON(http.StatusNotFound, responses.UserResponse{

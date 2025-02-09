@@ -49,3 +49,7 @@ type SubscribeBody struct {
 type ViewBody struct {
 	Id string
 }
+
+type UserInfo struct {
+	User string
+}

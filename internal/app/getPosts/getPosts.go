@@ -22,7 +22,7 @@ type GetPosts struct {
 	s Service
 }
 
-var userCollection *mongo.Collection = api.GetCollection(api.DB, "users")
+var postsCollection *mongo.Collection = api.GetCollection(api.DB, "posts")
 
 func New(s Service) *GetPosts {
 	return &GetPosts{
@@ -34,11 +34,9 @@ func (e *GetPosts) Status(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Define a slice to hold the users
-	var users []models.User
+	var posts []models.Post
 
-	// Use Find to get all documents
-	cursor, err := userCollection.Find(ctx, bson.M{})
+	cursor, err := postsCollection.Find(ctx, bson.M{})
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.UserResponse{
 			Status:  http.StatusInternalServerError,
@@ -48,20 +46,18 @@ func (e *GetPosts) Status(c echo.Context) error {
 	}
 	defer cursor.Close(ctx)
 
-	// Iterate through the cursor and decode each document
 	for cursor.Next(ctx) {
-		var user models.User
-		if err := cursor.Decode(&user); err != nil {
+		var post models.Post
+		if err := cursor.Decode(&post); err != nil {
 			return c.JSON(http.StatusInternalServerError, responses.UserResponse{
 				Status:  http.StatusInternalServerError,
 				Message: "error",
 				Data:    &echo.Map{"data": err.Error()},
 			})
 		}
-		users = append(users, user)
+		posts = append(posts, post)
 	}
 
-	// Check for cursor errors
 	if err := cursor.Err(); err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.UserResponse{
 			Status:  http.StatusInternalServerError,
@@ -70,10 +66,9 @@ func (e *GetPosts) Status(c echo.Context) error {
 		})
 	}
 
-	// Return the list of users
 	return c.JSON(http.StatusOK, responses.UserResponse{
 		Status:  http.StatusOK,
 		Message: "success",
-		Data:    &echo.Map{"data": users},
+		Data:    &echo.Map{"data": posts},
 	})
 }

@@ -8,9 +8,9 @@ import (
 	"myapp/internal/app/communication/subscribe"
 	"myapp/internal/app/communication/view"
 	"myapp/internal/app/controllers"
-	createpost "myapp/internal/app/createPost"
-	getPosts "myapp/internal/app/endpoint"
+	"myapp/internal/app/createPost"
 	"myapp/internal/app/getPost"
+	"myapp/internal/app/getPosts"
 	"myapp/internal/app/getUser"
 	"myapp/internal/app/getUsers"
 	"myapp/internal/app/login"
@@ -31,7 +31,7 @@ type App struct {
 	createUser *controllers.CreateUser
 	login      *login.Login
 	getPost    *getPost.GetPost
-	createPost *createpost.CreatePost
+	createPost *createPost.CreatePost
 	like       *like.Like
 	subscribe  *subscribe.Subscribe
 	bookmark   *bookmark.Bookmark
@@ -58,7 +58,7 @@ func New() (*App, error) {
 	a.login = login.New()
 
 	a.getPost = getPost.New()
-	a.createPost = createpost.New()
+	a.createPost = createPost.New()
 
 	a.like = like.New()
 	a.bookmark = bookmark.New()
