@@ -12,6 +12,7 @@ import (
 	"myapp/internal/app/getPost"
 	"myapp/internal/app/getPosts"
 	"myapp/internal/app/getUser"
+	"myapp/internal/app/getUserInfo"
 	"myapp/internal/app/getUsers"
 	"myapp/internal/app/login"
 	"myapp/internal/app/ping"
@@ -24,19 +25,20 @@ import (
 )
 
 type App struct {
-	e          *getPosts.GetPosts
-	s          *service.Service
-	ping       *ping.Ping
-	getUsers   *getUsers.GetUsers
-	createUser *controllers.CreateUser
-	login      *login.Login
-	getPost    *getPost.GetPost
-	createPost *createPost.CreatePost
-	like       *like.Like
-	subscribe  *subscribe.Subscribe
-	bookmark   *bookmark.Bookmark
-	view       *view.View
-	getUser    *getUser.GetUser
+	e           *getPosts.GetPosts
+	s           *service.Service
+	ping        *ping.Ping
+	getUsers    *getUsers.GetUsers
+	createUser  *controllers.CreateUser
+	login       *login.Login
+	getPost     *getPost.GetPost
+	createPost  *createPost.CreatePost
+	like        *like.Like
+	subscribe   *subscribe.Subscribe
+	bookmark    *bookmark.Bookmark
+	view        *view.View
+	getUser     *getUser.GetUser
+	getUserInfo *getUserInfo.GetUserInfo
 
 	echo *echo.Echo
 }
@@ -53,6 +55,8 @@ func New() (*App, error) {
 	a.e = getPosts.New(a.s)
 	a.ping = ping.New()
 	a.getUsers = getUsers.New()
+	a.getUser = getUser.New()
+	a.getUserInfo = getUserInfo.New()
 
 	a.createUser = controllers.New()
 	a.login = login.New()
@@ -73,7 +77,7 @@ func New() (*App, error) {
 	a.echo.GET("/getPost", a.getPost.Status, checkToken.CheckToken)
 	a.echo.POST("/createPost", a.createPost.Status, checkToken.CheckToken)
 	a.echo.GET("/getSelf", a.getUser.Status, checkToken.CheckToken)
-	a.echo.GET("/getUser", a.getUser.Status, checkToken.CheckToken)
+	a.echo.GET("/getUser", a.getUserInfo.Status, checkToken.CheckToken)
 
 	a.echo.POST("/like", a.like.Status, checkToken.CheckToken)
 	a.echo.POST("/bookmark", a.bookmark.Status, checkToken.CheckToken)
