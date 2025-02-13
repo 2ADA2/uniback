@@ -12,6 +12,7 @@ type User struct {
 type Post struct {
 	ID        primitive.ObjectID
 	Author    string `json:"author"`
+	Header    string
 	Date      string `json:"date"`
 	Text      string `json:"text"`
 	ImgUrl    string `json:"imgUrl"`
