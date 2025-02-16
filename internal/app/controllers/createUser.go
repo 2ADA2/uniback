@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"myapp/internal/app/models"
 	"myapp/internal/app/responses"
 	"myapp/internal/pkg/api"
@@ -54,7 +53,6 @@ func (e *CreateUser) Status(c echo.Context) error {
 	}
 
 	jwtToken, err := token.CreateToken(name)
-	fmt.Println(err)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, responses.UserResponse{

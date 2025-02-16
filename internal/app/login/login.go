@@ -2,7 +2,6 @@ package login
 
 import (
 	"context"
-	"fmt"
 	"myapp/internal/app/models"
 	"myapp/internal/app/responses"
 	"myapp/internal/pkg/api"
@@ -72,7 +71,6 @@ func (e *Login) Status(c echo.Context) error {
 	}
 
 	userCollection.UpdateOne(ctx, bson.M{"name": name}, bson.M{"$set": bson.M{"token": jwtToken}})
-	fmt.Println(jwtToken)
 	return c.JSON(http.StatusOK, responses.UserResponse{
 		Status:  http.StatusOK,
 		Message: "loginOk",
