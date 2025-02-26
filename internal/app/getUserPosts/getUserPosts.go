@@ -7,6 +7,7 @@ import (
 	"myapp/internal/app/responses"
 	"myapp/internal/pkg/api"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -62,7 +63,9 @@ func (e *GetUserPosts) Status(c echo.Context) error {
 		}
 
 		userPosts = append(userPosts, userPost)
+
 	}
+	slices.Reverse(userPosts)
 
 	return c.JSON(http.StatusCreated, responses.UserResponse{
 		Status:  http.StatusCreated,

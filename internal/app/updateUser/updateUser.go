@@ -21,6 +21,7 @@ func New() *UpdateUser {
 	return &UpdateUser{}
 }
 
+var userCollection *mongo.Collection = api.GetCollection(api.DB, "users")
 var cfgCollection *mongo.Collection = api.GetCollection(api.DB, "configs")
 
 func (e *UpdateUser) Status(c echo.Context) error {
@@ -33,16 +34,31 @@ func (e *UpdateUser) Status(c echo.Context) error {
 		return err
 	}
 
-	cfgCollection.UpdateOne(ctx, bson.M{"User": jsonUser.User}, bson.M{"$set": bson.M{
-		"About": jsonUser.About,
-		"Links": jsonUser.Links,
-	}})
+	authHeader := c.Request().Header.Get("Authorization")
+	cursor := userCollection.FindOne(ctx, bson.M{"token": authHeader})
+	var user models.User
+	cursor.Decode(&user)
+
+	if user.Name != jsonUser.User {
+		return c.JSON(
+			http.StatusOK, responses.UserResponse{
+				Status:  http.StatusOK,
+				Message: "wrong user",
+			})
+	}
+
+	cfgCollection.UpdateOne(ctx, bson.M{"user": jsonUser.User}, bson.M{
+		"$set": bson.M{
+			"About": jsonUser.About,
+			"Links": jsonUser.Links,
+		},
+	})
 
 	return c.JSON(http.StatusOK, responses.UserResponse{
 		Status:  http.StatusOK,
 		Message: "success",
 		Data: &echo.Map{
-			"post": jsonUser,
+			"user": jsonUser,
 		},
 	})
 }

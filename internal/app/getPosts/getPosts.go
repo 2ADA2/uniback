@@ -7,6 +7,7 @@ import (
 	"myapp/internal/app/service"
 	"myapp/internal/pkg/api"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -57,6 +58,8 @@ func (e *GetPosts) Status(c echo.Context) error {
 		}
 		posts = append(posts, post)
 	}
+
+	slices.Reverse(posts)
 
 	if err := cursor.Err(); err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.UserResponse{

@@ -18,6 +18,7 @@ import (
 	"myapp/internal/app/login"
 	"myapp/internal/app/ping"
 	"myapp/internal/app/service"
+	"myapp/internal/app/updateUser"
 	"myapp/internal/mw/checkToken"
 	"os"
 
@@ -41,6 +42,7 @@ type App struct {
 	getUser      *getUser.GetUser
 	getUserInfo  *getUserInfo.GetUserInfo
 	getUserPosts *getuserposts.GetUserPosts
+	updateUser   *updateUser.UpdateUser
 
 	echo *echo.Echo
 }
@@ -71,6 +73,8 @@ func New() (*App, error) {
 	a.bookmark = bookmark.New()
 	a.subscribe = subscribe.New()
 
+	a.updateUser = updateUser.New()
+
 	a.echo.GET("/ping", a.ping.Status)
 	a.echo.GET("/getPosts", a.e.Status, checkToken.CheckToken)
 
@@ -87,6 +91,8 @@ func New() (*App, error) {
 	a.echo.POST("/bookmark", a.bookmark.Status, checkToken.CheckToken)
 	a.echo.POST("/subscribe", a.subscribe.Status, checkToken.CheckToken)
 	a.echo.POST("/view", a.view.Status, checkToken.CheckToken)
+
+	a.echo.PATCH("/updateUser", a.updateUser.Status, checkToken.CheckToken)
 
 	return a, nil
 }
