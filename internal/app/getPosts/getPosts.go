@@ -2,9 +2,9 @@ package getPosts
 
 import (
 	"context"
+	"fmt"
 	"myapp/internal/app/models"
 	"myapp/internal/app/responses"
-	"myapp/internal/app/service"
 	"myapp/internal/pkg/api"
 	"net/http"
 	"slices"
@@ -15,20 +15,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type Service interface {
-	GenerateNewPosts() service.Posts
-}
-
 type GetPosts struct {
-	s Service
 }
 
 var postsCollection *mongo.Collection = api.GetCollection(api.DB, "posts")
 
-func New(s Service) *GetPosts {
-	return &GetPosts{
-		s: s,
-	}
+func New() *GetPosts {
+	return &GetPosts{}
 }
 
 func (e *GetPosts) Status(c echo.Context) error {
@@ -45,6 +38,7 @@ func (e *GetPosts) Status(c echo.Context) error {
 			Data:    &echo.Map{"data": err.Error()},
 		})
 	}
+
 	defer cursor.Close(ctx)
 
 	for cursor.Next(ctx) {
@@ -60,8 +54,12 @@ func (e *GetPosts) Status(c echo.Context) error {
 	}
 
 	slices.Reverse(posts)
+	if len(posts) > 100 {
+		posts = posts[:100]
+	}
 
 	if err := cursor.Err(); err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, responses.UserResponse{
 			Status:  http.StatusInternalServerError,
 			Message: "error",

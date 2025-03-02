@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"myapp/internal/app/communication/bookmark"
 	"myapp/internal/app/communication/like"
@@ -17,6 +18,8 @@ import (
 	"myapp/internal/app/getUsers"
 	"myapp/internal/app/login"
 	"myapp/internal/app/ping"
+	"myapp/internal/app/randomPosts"
+	"myapp/internal/app/search"
 	"myapp/internal/app/service"
 	"myapp/internal/app/updateUser"
 	"myapp/internal/mw/checkToken"
@@ -43,6 +46,8 @@ type App struct {
 	getUserInfo  *getUserInfo.GetUserInfo
 	getUserPosts *getuserposts.GetUserPosts
 	updateUser   *updateUser.UpdateUser
+	randomPosts  *randomPosts.RandomPosts
+	search       *search.Search
 
 	echo *echo.Echo
 }
@@ -50,24 +55,26 @@ type App struct {
 func New() (*App, error) {
 	a := &App{}
 	a.echo = echo.New()
-	a.s = service.New()
 
 	a.echo.Use(middleware.Logger())
 	a.echo.Use(middleware.Recover())
 	a.echo.Use(middleware.CORS())
+	a.echo.Logger.SetOutput(io.Discard)
 
-	a.e = getPosts.New(a.s)
+	a.e = getPosts.New()
 	a.ping = ping.New()
 	a.getUsers = getUsers.New()
 	a.getUser = getUser.New()
 	a.getUserInfo = getUserInfo.New()
 	a.getUserPosts = getuserposts.New()
+	a.search = search.New()
 
 	a.createUser = controllers.New()
 	a.login = login.New()
 
 	a.getPost = getPost.New()
 	a.createPost = createPost.New()
+	a.randomPosts = randomPosts.New()
 
 	a.like = like.New()
 	a.bookmark = bookmark.New()
@@ -77,6 +84,8 @@ func New() (*App, error) {
 
 	a.echo.GET("/ping", a.ping.Status)
 	a.echo.GET("/getPosts", a.e.Status, checkToken.CheckToken)
+	a.echo.GET("/getRandomPosts", a.randomPosts.Status, checkToken.CheckToken)
+	a.echo.GET("/search", a.search.Status, checkToken.CheckToken)
 
 	a.echo.POST("/register", a.createUser.Status)
 	a.echo.POST("/login", a.login.Status)
