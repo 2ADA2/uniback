@@ -1,6 +1,7 @@
 package createImage
 
 import (
+	"myapp/internal/app/responses"
 	"myapp/internal/pkg/s3uploader"
 	"net/http"
 
@@ -27,12 +28,16 @@ func (e *CreateImage) Status(c echo.Context) error {
 	}
 	defer file.Close()
 
-	// Загружаем файл в S3
 	url, err := s3uploader.UploadToS3(file, fileHeader.Filename)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	// Возвращаем URL загруженного файла
-	return c.JSON(http.StatusOK, map[string]string{"url": url})
+	return c.JSON(http.StatusCreated, responses.UserResponse{
+		Status:  http.StatusCreated,
+		Message: "created",
+		Data: &echo.Map{
+			"url": url,
+		},
+	})
 }

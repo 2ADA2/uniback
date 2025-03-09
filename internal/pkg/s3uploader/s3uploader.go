@@ -16,10 +16,11 @@ import (
 
 func UploadToS3(file multipart.File, filename string) (string, error) {
 	accessKey := os.Getenv("S3ACCESSKEY")
-	secretKey := os.Getenv("S3SECRETKTY")
+	secretKey := os.Getenv("S3SECRETKEY")
 	endpoint := os.Getenv("S3URL") // Selectel S3 URL
 	region := os.Getenv("REGION")
 	name := os.Getenv("S3NAME")
+	imgUrl := os.Getenv("IMGURL")
 
 	// Задаем конфигурацию с явными ключами
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
@@ -43,7 +44,7 @@ func UploadToS3(file multipart.File, filename string) (string, error) {
 	filename = primitive.NewObjectID().Hex() + filename
 
 	uploader := manager.NewUploader(client)
-	result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
+	_, err = uploader.Upload(context.TODO(), &s3.PutObjectInput{
 		Bucket: aws.String(name),
 		Key:    aws.String(filename),
 		Body:   file,
@@ -52,6 +53,6 @@ func UploadToS3(file multipart.File, filename string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return result.Location, nil
+	return imgUrl + "/" + filename, nil
 
 }

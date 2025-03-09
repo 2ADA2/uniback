@@ -11,6 +11,7 @@ import (
 	"myapp/internal/app/controllers"
 	"myapp/internal/app/createImage"
 	"myapp/internal/app/createPost"
+	"myapp/internal/app/deleteImage"
 	"myapp/internal/app/getPost"
 	"myapp/internal/app/getPosts"
 	"myapp/internal/app/getUser"
@@ -50,6 +51,7 @@ type App struct {
 	randomPosts  *randomPosts.RandomPosts
 	search       *search.Search
 	createImage  *createImage.CreateImage
+	deleteImage  *deleteImage.DeleteImage
 
 	echo *echo.Echo
 }
@@ -85,6 +87,7 @@ func New() (*App, error) {
 	a.updateUser = updateUser.New()
 
 	a.createImage = createImage.New()
+	a.deleteImage = deleteImage.New()
 
 	a.echo.GET("/ping", a.ping.Status)
 	a.echo.GET("/getPosts", a.e.Status, checkToken.CheckToken)
@@ -106,6 +109,7 @@ func New() (*App, error) {
 	a.echo.POST("/view", a.view.Status, checkToken.CheckToken)
 
 	a.echo.POST("/createImage", a.createImage.Status, checkToken.CheckToken)
+	a.echo.DELETE("/deleteImage", a.deleteImage.Status, checkToken.CheckToken)
 
 	a.echo.PATCH("/updateUser", a.updateUser.Status, checkToken.CheckToken)
 
