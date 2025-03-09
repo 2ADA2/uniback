@@ -12,6 +12,7 @@ import (
 	"myapp/internal/app/createImage"
 	"myapp/internal/app/createPost"
 	"myapp/internal/app/deleteImage"
+	"myapp/internal/app/deletePost"
 	"myapp/internal/app/getPost"
 	"myapp/internal/app/getPosts"
 	"myapp/internal/app/getUser"
@@ -40,6 +41,7 @@ type App struct {
 	login        *login.Login
 	getPost      *getPost.GetPost
 	createPost   *createPost.CreatePost
+	deletePost   *deletePost.DeletePost
 	like         *like.Like
 	subscribe    *subscribe.Subscribe
 	bookmark     *bookmark.Bookmark
@@ -78,6 +80,7 @@ func New() (*App, error) {
 
 	a.getPost = getPost.New()
 	a.createPost = createPost.New()
+	a.deletePost = deletePost.New()
 	a.randomPosts = randomPosts.New()
 
 	a.like = like.New()
@@ -99,6 +102,7 @@ func New() (*App, error) {
 
 	a.echo.GET("/getPost", a.getPost.Status, checkToken.CheckToken)
 	a.echo.POST("/createPost", a.createPost.Status, checkToken.CheckToken)
+	a.echo.DELETE("/deletePost", a.deletePost.Status, checkToken.CheckToken)
 	a.echo.GET("/getSelf", a.getUser.Status, checkToken.CheckToken)
 	a.echo.GET("/getUser", a.getUserInfo.Status, checkToken.CheckToken)
 	a.echo.POST("/getUserPosts", a.getUserPosts.Status)
