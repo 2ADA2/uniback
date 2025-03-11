@@ -37,6 +37,7 @@ func (e *CreatePost) Status(c echo.Context) error {
 	newPost := models.Post{
 		ID:        primitive.NewObjectID(),
 		Author:    jsonPost.Author,
+		Icon:      jsonPost.Icon,
 		Header:    jsonPost.Header,
 		Date:      jsonPost.Date,
 		Text:      jsonPost.Text,

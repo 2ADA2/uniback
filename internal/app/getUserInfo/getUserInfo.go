@@ -48,6 +48,7 @@ func (e *GetUserInfo) Status(c echo.Context) error {
 		Data: &echo.Map{
 			"data": map[string]interface{}{
 				"User":       userCfg.User,
+				"Icon":       userCfg.Icon,
 				"About":      userCfg.About,
 				"Followers":  userCfg.Followers,
 				"Subscribes": userCfg.Subscribes,

@@ -23,6 +23,7 @@ func New() *UpdateUser {
 
 var userCollection *mongo.Collection = api.GetCollection(api.DB, "users")
 var cfgCollection *mongo.Collection = api.GetCollection(api.DB, "configs")
+var postsCollection *mongo.Collection = api.GetCollection(api.DB, "posts")
 
 func (e *UpdateUser) Status(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -51,8 +52,13 @@ func (e *UpdateUser) Status(c echo.Context) error {
 		"$set": bson.M{
 			"About": jsonUser.About,
 			"Links": jsonUser.Links,
+			"Icon":  jsonUser.Icon,
 		},
 	})
+
+	postsCollection.UpdateMany(ctx, bson.M{"author": jsonUser.User}, bson.M{"$set": bson.M{
+		"Icon": jsonUser.Icon,
+	}})
 
 	return c.JSON(http.StatusOK, responses.UserResponse{
 		Status:  http.StatusOK,

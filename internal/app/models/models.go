@@ -12,6 +12,7 @@ type User struct {
 type Post struct {
 	ID        primitive.ObjectID
 	Author    string `json:"author"`
+	Icon      string
 	Header    string
 	Date      string `json:"date"`
 	Text      string `json:"text"`
@@ -32,6 +33,7 @@ type Link struct {
 
 type UserCfg struct {
 	User       string
+	Icon       string
 	About      string
 	Followers  []string
 	Subscribes []string
