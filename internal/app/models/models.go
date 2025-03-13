@@ -19,6 +19,7 @@ type Post struct {
 	ImgUrl    string `json:"imgUrl"`
 	Likes     int
 	Bookmarks int
+	Reposts   int
 	Views     int
 }
 
@@ -41,6 +42,7 @@ type UserCfg struct {
 	Date       string
 	Posts      Posts
 	Likes      []string
+	Reposts    []string
 	Bookmarks  []string
 }
 

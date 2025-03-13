@@ -6,6 +6,7 @@ import (
 	"log"
 	"myapp/internal/app/communication/bookmark"
 	"myapp/internal/app/communication/like"
+	"myapp/internal/app/communication/repost"
 	"myapp/internal/app/communication/subscribe"
 	"myapp/internal/app/communication/view"
 	"myapp/internal/app/controllers"
@@ -43,6 +44,7 @@ type App struct {
 	createPost   *createPost.CreatePost
 	deletePost   *deletePost.DeletePost
 	like         *like.Like
+	repost       *repost.Repost
 	subscribe    *subscribe.Subscribe
 	bookmark     *bookmark.Bookmark
 	view         *view.View
@@ -86,6 +88,7 @@ func New() (*App, error) {
 	a.like = like.New()
 	a.bookmark = bookmark.New()
 	a.subscribe = subscribe.New()
+	a.repost = repost.New()
 
 	a.updateUser = updateUser.New()
 
@@ -111,6 +114,7 @@ func New() (*App, error) {
 	a.echo.POST("/bookmark", a.bookmark.Status, checkToken.CheckToken)
 	a.echo.POST("/subscribe", a.subscribe.Status, checkToken.CheckToken)
 	a.echo.POST("/view", a.view.Status, checkToken.CheckToken)
+	a.echo.POST("/repost", a.repost.Status, checkToken.CheckToken)
 
 	a.echo.POST("/createImage", a.createImage.Status, checkToken.CheckToken)
 	a.echo.DELETE("/deleteImage", a.deleteImage.Status, checkToken.CheckToken)
