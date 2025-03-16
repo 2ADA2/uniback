@@ -57,3 +57,18 @@ type ViewBody struct {
 type UserInfo struct {
 	User string
 }
+
+type Comments struct {
+	Comments []Comment
+}
+
+type Comment struct {
+	Id       primitive.ObjectID
+	Author   string
+	Icon     string
+	Text     string
+	Likes    int
+	Dislikes int
+	isAnswer int
+	Answers  []Comment
+}
