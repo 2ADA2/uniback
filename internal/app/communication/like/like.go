@@ -59,7 +59,6 @@ func (e *Like) Status(c echo.Context) error {
 			},
 		})
 	}
-
 	userLikes := cfg.Likes
 
 	liked := false

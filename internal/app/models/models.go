@@ -21,6 +21,7 @@ type Post struct {
 	Bookmarks int
 	Reposts   int
 	Views     int
+	Comments  int
 }
 
 type Posts struct {
@@ -58,17 +59,18 @@ type UserInfo struct {
 	User string
 }
 
-type Comments struct {
-	Comments []Comment
-}
-
 type Comment struct {
 	Id       primitive.ObjectID
+	PostId   string
 	Author   string
 	Icon     string
 	Text     string
+	Date     string
 	Likes    int
 	Dislikes int
-	isAnswer int
+	IsAnswer bool
 	Answers  []Comment
+}
+type GetComments struct {
+	Id string
 }

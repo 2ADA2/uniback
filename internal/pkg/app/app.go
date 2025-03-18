@@ -10,10 +10,12 @@ import (
 	"myapp/internal/app/communication/subscribe"
 	"myapp/internal/app/communication/view"
 	"myapp/internal/app/controllers"
+	"myapp/internal/app/createComment"
 	"myapp/internal/app/createImage"
 	"myapp/internal/app/createPost"
 	"myapp/internal/app/deleteImage"
 	"myapp/internal/app/deletePost"
+	"myapp/internal/app/getComments"
 	"myapp/internal/app/getPost"
 	"myapp/internal/app/getPosts"
 	"myapp/internal/app/getUser"
@@ -34,28 +36,30 @@ import (
 )
 
 type App struct {
-	e            *getPosts.GetPosts
-	s            *service.Service
-	ping         *ping.Ping
-	getUsers     *getUsers.GetUsers
-	createUser   *controllers.CreateUser
-	login        *login.Login
-	getPost      *getPost.GetPost
-	createPost   *createPost.CreatePost
-	deletePost   *deletePost.DeletePost
-	like         *like.Like
-	repost       *repost.Repost
-	subscribe    *subscribe.Subscribe
-	bookmark     *bookmark.Bookmark
-	view         *view.View
-	getUser      *getUser.GetUser
-	getUserInfo  *getUserInfo.GetUserInfo
-	getUserPosts *getuserposts.GetUserPosts
-	updateUser   *updateUser.UpdateUser
-	randomPosts  *randomPosts.RandomPosts
-	search       *search.Search
-	createImage  *createImage.CreateImage
-	deleteImage  *deleteImage.DeleteImage
+	e             *getPosts.GetPosts
+	s             *service.Service
+	ping          *ping.Ping
+	getUsers      *getUsers.GetUsers
+	createUser    *controllers.CreateUser
+	login         *login.Login
+	getPost       *getPost.GetPost
+	createPost    *createPost.CreatePost
+	deletePost    *deletePost.DeletePost
+	like          *like.Like
+	repost        *repost.Repost
+	subscribe     *subscribe.Subscribe
+	bookmark      *bookmark.Bookmark
+	view          *view.View
+	getUser       *getUser.GetUser
+	getUserInfo   *getUserInfo.GetUserInfo
+	getUserPosts  *getuserposts.GetUserPosts
+	updateUser    *updateUser.UpdateUser
+	randomPosts   *randomPosts.RandomPosts
+	search        *search.Search
+	createImage   *createImage.CreateImage
+	deleteImage   *deleteImage.DeleteImage
+	createComment *createComment.CreateComment
+	getComments   *getComments.GetComments
 
 	echo *echo.Echo
 }
@@ -95,6 +99,8 @@ func New() (*App, error) {
 	a.createImage = createImage.New()
 	a.deleteImage = deleteImage.New()
 
+	a.createComment = createComment.New()
+
 	a.echo.GET("/ping", a.ping.Status)
 	a.echo.GET("/getPosts", a.e.Status, checkToken.CheckToken)
 	a.echo.GET("/getRandomPosts", a.randomPosts.Status, checkToken.CheckToken)
@@ -118,6 +124,9 @@ func New() (*App, error) {
 
 	a.echo.POST("/createImage", a.createImage.Status, checkToken.CheckToken)
 	a.echo.DELETE("/deleteImage", a.deleteImage.Status, checkToken.CheckToken)
+
+	a.echo.POST("/createComment", a.createComment.Status, checkToken.CheckToken)
+	a.echo.GET("/getComments", a.getComments.Status, checkToken.CheckToken)
 
 	a.echo.PATCH("/updateUser", a.updateUser.Status, checkToken.CheckToken)
 
