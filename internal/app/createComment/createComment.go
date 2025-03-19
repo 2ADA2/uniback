@@ -3,7 +3,6 @@ package createComment
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"myapp/internal/app/models"
 	"myapp/internal/app/responses"
 	"myapp/internal/pkg/api"
@@ -63,7 +62,6 @@ func (e *CreateComment) Status(c echo.Context) error {
 		resp := postCollection.FindOne(ctx, bson.M{"id": postId})
 		var post models.Post
 		resp.Decode(&post)
-		fmt.Println(post)
 
 		postCollection.UpdateOne(ctx, bson.M{"id": postId}, bson.M{"$set": bson.M{"comments": post.Comments + 1}})
 
@@ -75,14 +73,15 @@ func (e *CreateComment) Status(c echo.Context) error {
 			},
 		})
 	}
+	id, _ := primitive.ObjectIDFromHex(jsonComment.CommentId)
 
-	commentCode := commentsCollection.FindOne(ctx, bson.M{"id": jsonComment.PostId})
+	commentCode := commentsCollection.FindOne(ctx, bson.M{"id": id})
 	var comment models.Comment
 	commentCode.Decode(&comment)
 
 	newAnswers := comment.Answers
 	newAnswers = append(newAnswers, newComment)
-	commentsCollection.UpdateOne(ctx, bson.M{"id": jsonComment.PostId}, bson.M{"$set": bson.M{"answers": newAnswers}})
+	commentsCollection.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": bson.M{"answers": newAnswers}})
 
 	return c.JSON(http.StatusCreated, responses.UserResponse{
 		Status:  http.StatusCreated,

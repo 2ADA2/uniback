@@ -60,16 +60,17 @@ type UserInfo struct {
 }
 
 type Comment struct {
-	Id       primitive.ObjectID
-	PostId   string
-	Author   string
-	Icon     string
-	Text     string
-	Date     string
-	Likes    int
-	Dislikes int
-	IsAnswer bool
-	Answers  []Comment
+	Id        primitive.ObjectID
+	CommentId string
+	PostId    string
+	Author    string
+	Icon      string
+	Text      string
+	Date      string
+	Likes     int
+	Dislikes  int
+	IsAnswer  bool
+	Answers   []Comment
 }
 type GetComments struct {
 	Id string
