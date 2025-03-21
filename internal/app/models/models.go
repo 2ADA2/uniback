@@ -45,6 +45,8 @@ type UserCfg struct {
 	Likes      []string
 	Reposts    []string
 	Bookmarks  []string
+	CommentLikes []string
+	CommentDislikes []string
 }
 
 type SubscribeBody struct {
