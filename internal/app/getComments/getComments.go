@@ -22,6 +22,7 @@ func New() *GetComments {
 }
 
 var commentsCollection *mongo.Collection = api.GetCollection(api.DB, "comments")
+var userCfgCollection *mongo.Collection = api.GetCollection(api.DB, "configs")
 
 func (e *GetComments) Status(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -51,6 +52,9 @@ func (e *GetComments) Status(c echo.Context) error {
 				Data:    &echo.Map{"data": err.Error()},
 			})
 		}
+		var user models.UserCfg
+		userCfgCollection.FindOne(ctx, bson.M{"user": comment.Author}).Decode(&user)
+		comment.Icon = user.Icon
 		comments = append(comments, comment)
 	}
 	slices.Reverse(comments)

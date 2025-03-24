@@ -60,7 +60,7 @@ func (e *CommentDislike) Status(c echo.Context) error {
 			dislikes = append(dislikes, CId.Hex())
 			comment.Dislikes += 1
 		}
-		commentsCollection.UpdateOne(ctx, bson.M{"id": CId}, bson.M{"$set": bson.M{"likes": comment.Likes}})
+		commentsCollection.UpdateOne(ctx, bson.M{"id": CId}, bson.M{"$set": bson.M{"dislikes": comment.Dislikes}})
 		userCfgCollection.UpdateOne(ctx, bson.M{"user": jsonComment.User}, bson.M{"$set": bson.M{"commentDislikes": dislikes}})
 
 	} else {
