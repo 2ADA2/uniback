@@ -1,6 +1,8 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type User struct {
 	Id       primitive.ObjectID
@@ -34,18 +36,18 @@ type Link struct {
 }
 
 type UserCfg struct {
-	User       string
-	Icon       string
-	About      string
-	Followers  []string
-	Subscribes []string
-	Links      []Link
-	Date       string
-	Posts      Posts
-	Likes      []string
-	Reposts    []string
-	Bookmarks  []string
-	CommentLikes []string
+	User            string
+	Icon            string
+	About           string
+	Followers       []string
+	Subscribes      []string
+	Links           []Link
+	Date            string
+	Posts           Posts
+	Likes           []string
+	Reposts         []string
+	Bookmarks       []string
+	CommentLikes    []string
 	CommentDislikes []string
 }
 
@@ -76,4 +78,9 @@ type Comment struct {
 }
 type GetComments struct {
 	Id string
+}
+type CommentCommunication struct {
+	User string
+	CId  string
+	AId  string
 }

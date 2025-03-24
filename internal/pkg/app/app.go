@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"myapp/internal/app/communication/bookmark"
+	"myapp/internal/app/communication/commentDelete"
 	"myapp/internal/app/communication/commentDislike"
 	"myapp/internal/app/communication/commentLike"
 	"myapp/internal/app/communication/like"
@@ -64,6 +65,7 @@ type App struct {
 	getComments    *getComments.GetComments
 	commentLike    *commentLike.CommentLike
 	commentDislike *commentDislike.CommentDislike
+	commentDelete  *commentDelete.CommentDelete
 
 	echo *echo.Echo
 }
@@ -106,6 +108,7 @@ func New() (*App, error) {
 	a.createComment = createComment.New()
 	a.commentLike = commentLike.New()
 	a.commentDislike = commentDislike.New()
+	a.commentDelete = commentDelete.New()
 
 	a.echo.GET("/ping", a.ping.Status)
 	a.echo.GET("/getPosts", a.e.Status, checkToken.CheckToken)
@@ -134,6 +137,7 @@ func New() (*App, error) {
 	a.echo.POST("/createComment", a.createComment.Status, checkToken.CheckToken)
 	a.echo.POST("/likeComment", a.commentLike.Status, checkToken.CheckToken)
 	a.echo.POST("/dislikeComment", a.commentDislike.Status, checkToken.CheckToken)
+	a.echo.POST("/deleteComment", a.commentDelete.Status, checkToken.CheckToken)
 	a.echo.GET("/getComments", a.getComments.Status, checkToken.CheckToken)
 
 	a.echo.PATCH("/updateUser", a.updateUser.Status, checkToken.CheckToken)

@@ -54,6 +54,7 @@ func (e *GetUserInfo) Status(c echo.Context) error {
 				"Subscribes": userCfg.Subscribes,
 				"Links":      userCfg.Links,
 				"Date":       userCfg.Date,
+				"Reposts":    userCfg.Reposts,
 			},
 		},
 	})
